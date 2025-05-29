@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>To-Do List App</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 30px 20px;
+    color: #2c3e50;
+  }
+
+  .container {
+    margin: 50px auto;
+    padding: 30px 30px 40px 30px;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow:
+      0 4px 6px rgba(50, 50, 93, 0.11),
+      0 1px 3px rgba(0, 0, 0, 0.08);
+    display: inline-block;
+    text-align: left;
+    width: 380px;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .container:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow:
+      0 10px 20px rgba(50, 50, 93, 0.15),
+      0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  h2 {
+    color: #34495e;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+  }
+
+  input, select, textarea {
+    padding: 12px 15px;
+    margin: 10px 0 15px 0;
+    width: 100%;
+    border: 2.5px solid #d1d9e6;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #34495e;
+    background-color: #f9fbff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #6c7ae0;
+    box-shadow: 0 0 8px rgba(108, 122, 224, 0.5);
+    background-color: #fff;
+  }
+
+  button {
+    padding: 14px 20px;
+    margin: 10px 0 0 0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 1.1px;
+    color: white;
+    background: linear-gradient(90deg, #6c7ae0 0%, #a394ff 100%);
+    box-shadow: 0 5px 15px rgba(108, 122, 224, 0.4);
+    transition: background 0.35s ease, box-shadow 0.35s ease;
+    width: 100%;
+  }
+
+  button:hover {
+    background: linear-gradient(90deg, #5a68c7 0%, #7e6fff 100%);
+    box-shadow: 0 8px 25px rgba(90, 104, 199, 0.6);
+  }
+
+  #taskList {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 25px;
+    max-height: 480px;
+    overflow-y: auto;
+    border-top: 2px solid #e4e9f7;
+  }
+
+  .task {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 20px;
+    background: #f4f6fb;
+    margin: 12px 0;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border-left: 6px solid #6c7ae0;
+  }
+
+  .task:hover {
+    transform: translateX(7px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+
+  .completed {
+    text-decoration: line-through;
+    color: #95a5a6;
+    border-left-color: #27ae60;
+    background-color: #ecf0f1;
+  }
+
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .task-text {
+    flex-grow: 1;
+    margin-right: 12px;
+    word-break: break-word;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .task-due {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-left: 15px;
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  .task-category {
+    font-size: 14px;
+    font-weight: 600;
+    color: #5d6d7e;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .task-notes {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #34495e;
+    line-height: 1.3;
+    white-space: pre-wrap;
+  }
+
+  .task-buttons {
+    margin-top: 10px;
+    align-self: flex-end;
+  }
+
+  .task-buttons button {
+    background: none;
+    border: none;
+    padding: 6px;
+    margin-left: 10px;
+    font-size: 18px;
+    opacity: 0.75;
+    transition: opacity 0.25s ease, transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .task-buttons button:hover {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+
+  .complete-btn {
+    color: #27ae60;
+  }
+
+  .edit-btn {
+    color: #f39c12;
+  }
+
+  .delete-btn {
+    color: #e74c3c;
+  }
+
+  .priority-high {
+    border-left-color: #e74c3c;
+  }
+
+  .priority-medium {
+    border-left-color: #f39c12;
+  }
+
+  .priority-low {
+    border-left-color: #27ae60;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: #bdc3c7;
+    padding: 35px 0;
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f0f3ff;
+    border-radius: 15px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #aab8ff;
+    border-radius: 15px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #8c9eff;
+  }
+
+  /* Animation for new tasks */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .new-task {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  /* Responsive design */
+  @media (max-width: 420px) {
+    .container {
+      width: 95%;
+      padding: 20px 20px 30px 20px;
+    }
+
+    h2 {
+      font-size: 22px;
+    }
+
+    .task-text {
+      font-size: 15px;
+    }
+
+    input, select, textarea, button {
+      font-size: 15px;
+      padding: 10px 12px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>📝 To-Do List</h2>
+  <input type="text" id="taskInput" placeholder="What needs to be done?">
+  <input type="datetime-local" id="taskTime">
+  <select id="taskPriority" aria-label="Task Priority">
+    <option value="low">Low Priority</option>
+    <option value="medium" selected>Medium Priority</option>
+    <option value="high">High Priority</option>
+  </select>
+  <select id="taskCategory" aria-label="Task Category">
+    <option value="Work" selected>Work</option>
+    <option value="Personal">Personal</option>
+    <option value="Shopping">Shopping</option>
+    <option value="Other">Other</option>
+  </select>
+  <textarea id="taskNotes" rows="3" placeholder="Additional notes..."></textarea>
+<button class="add-btn" onclick="addTask()">➕ Add Task</button>
+
+<ul id="taskList" aria-live="polite" aria-relevant="additions removals"> <div class="empty-state" id="emptyState">No tasks yet. Add one above!</div> </ul> </div> <script> function addTask() { let taskText = document.getElementById("taskInput").value.trim(); let taskTime = document.getElementById("taskTime").value; let taskPriority = document.getElementById("taskPriority").value; let taskCategory = document.getElementById("taskCategory").value; let taskNotes = document.getElementById("taskNotes").value.trim(); if (taskText === "") { alert("Please enter a task description"); return; } if (document.getElementById("emptyState")) { document.getElementById("emptyState").style.display = "none"; } let li = document.createElement("li"); li.className = task new-task priority-${taskPriority}; let dueText = taskTime ? new Date(taskTime).toLocaleString() : "No deadline"; li.innerHTML = ` <div class="task-header"> <div class="task-text">${taskText}</div> <div class="task-due">${dueText}</div> </div> <div class="task-category">${taskCategory}</div> ${taskNotes ? <div class="task-notes">${taskNotes}</div> : ''} <div class="task-buttons"> <button class="complete-btn" onclick="completeTask(this)" aria-label="Complete Task">✓</button> <button class="edit-btn" onclick="editTask(this)" aria-label="Edit Task">✏</button> <button class="delete-btn" onclick="deleteTask(this)" aria-label="Delete Task">✕</button> </div> `; document.getElementById("taskList").appendChild(li); // Clear inputs document.getElementById("taskInput").value = ""; document.getElementById("taskTime").value = ""; document.getElementById("taskPriority").value = "medium"; document.getElementById("taskCategory").value = "Work"; document.getElementById("taskNotes").value = ""; li.addEventListener('animationend', () => { li.classList.remove('new-task'); }); } function completeTask(btn) { const taskItem = btn.closest('.task'); taskItem.classList.toggle("completed"); // Move completed tasks to bottom if (taskItem.classList.contains("completed")) { document.getElementById("taskList").appendChild(taskItem); } } function editTask(btn) { const taskItem = btn.closest('.task'); const taskTextEl = taskItem.querySelector('.task-text'); const taskDueEl = taskItem.querySelector('.task-due'); const taskCategoryEl = taskItem.querySelector('.task-category'); const taskNotesEl = taskItem.querySelector('.task-notes'); let newTask = prompt("Edit task description:", taskTextEl.textContent); if (newTask !== null && newTask.trim() !== "") { taskTextEl.textContent = newTask.trim(); } let newDue = prompt("Edit due date/time (leave blank for no deadline):", taskDueEl.textContent === "No deadline" ? "" : taskDueEl.textContent); if (newDue !== null) { taskDueEl.textContent = newDue.trim() || "No deadline"; } let newCategory = prompt("Edit category (Work, Personal, Shopping, Other):", taskCategoryEl.textContent); if (newCategory !== null && newCategory.trim() !== "") { taskCategoryEl.textContent = newCategory.trim(); } let newNotes = prompt("Edit notes:", taskNotesEl ? taskNotesEl.textContent : ""); if (newNotes !== null) { if (newNotes.trim() === "") { if (taskNotesEl) taskNotesEl.remove(); } else { if (taskNotesEl) { taskNotesEl.textContent = newNotes.trim(); } else { let notesDiv = document.createElement("div"); notesDiv.className = "task-notes"; notesDiv.textContent = newNotes.trim(); taskCategoryEl.insertAdjacentElement('afterend', notesDiv); } } } } function deleteTask(btn) { const taskItem = btn.closest('.task'); taskItem.style.transform = "translateX(120%)"; taskItem.style.opacity = "0"; setTimeout(() => { taskItem.remove(); if (document.getElementById("taskList").children.length === 0) { document.getElementById("emptyState").style.display = "block"; } }, 350); } document.getElementById("taskInput").addEventListener("keypress", function(e) { if (e.key === "Enter") { addTask(); } }); </script> </body> </html>
